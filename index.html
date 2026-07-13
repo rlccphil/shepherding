@@ -339,7 +339,7 @@ tr:last-child td{ border-bottom:none; }
       </div>
     </div>
     <div id="adminTableWrap"></div>
-    <p class="small-note">Whenever you click Approve, a pre-filled email to rlccphil@gmail.com opens in a new tab — just hit Send from your mail app to log it. This page can't send email silently on its own (no server behind it), so that click-to-send step is the closest to automatic it can get. The passcode above is a simple gate for course-team convenience, not a secure login — avoid using it for sensitive data.</p>
+    <p class="small-note">Approving a registrant automatically sends a notification to rlccphil@gmail.com from the connected Google account — no manual step needed. The passcode above is checked by the backend script, not just this page, so it's safe from anyone viewing the page source.</p>
   </div>
 
 </div>
@@ -347,27 +347,18 @@ tr:last-child td{ border-bottom:none; }
 <script>
 (function(){
   const COURSE_URL = "https://share.minicoursegenerator.com/category/The-Heart-and-Art-of-Shepherding-(External)-1/d93b341b-9578-42c2-b5c9-33d87036d77d";
-  const STORAGE_KEY = "shepherding-registrations";
-  const ADMIN_PASSCODE = "shepherd2026"; // change this in the code to your own passcode
+  const APPS_SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
 
   const $ = (id) => document.getElementById(id);
 
-  async function loadRegistrations(){
-    try{
-      const res = await window.storage.get(STORAGE_KEY, true);
-      return res ? JSON.parse(res.value) : [];
-    }catch(e){
-      return [];
-    }
-  }
-  async function saveRegistrations(list){
-    try{
-      await window.storage.set(STORAGE_KEY, JSON.stringify(list), true);
-      return true;
-    }catch(e){
-      console.error("storage error", e);
-      return false;
-    }
+  async function apiCall(action, params){
+    params = params || {};
+    const url = new URL(APPS_SCRIPT_URL);
+    url.searchParams.set('action', action);
+    Object.keys(params).forEach(k => url.searchParams.set(k, params[k]));
+    const res = await fetch(url.toString());
+    if(!res.ok) throw new Error('Request failed: ' + res.status);
+    return res.json();
   }
 
   function normEmail(e){ return e.trim().toLowerCase(); }
@@ -438,19 +429,16 @@ tr:last-child td{ border-bottom:none; }
 
     const btn = e.target.querySelector('button');
     btn.disabled = true; btn.textContent = 'Submitting…';
-
-    const list = await loadRegistrations();
-    const existing = list.find(r => r.email === email);
-    if(existing){
+    try{
+      const entry = await apiCall('register', {name, email});
+      if(entry.error){ errEl.textContent = entry.error; errEl.classList.remove('hidden'); return; }
+      showResultPanel(entry);
+    }catch(err){
+      errEl.textContent = 'Something went wrong submitting your request. Please try again.';
+      errEl.classList.remove('hidden');
+    }finally{
       btn.disabled = false; btn.textContent = 'Submit request';
-      showResultPanel(existing);
-      return;
     }
-    const entry = { name, email, status: 'pending', submittedAt: new Date().toISOString() };
-    list.push(entry);
-    await saveRegistrations(list);
-    btn.disabled = false; btn.textContent = 'Submit request';
-    showResultPanel(entry);
   });
 
   // ---- check status ----
@@ -459,17 +447,22 @@ tr:last-child td{ border-bottom:none; }
     const resultEl = $('checkResult');
     if(!email){ resultEl.innerHTML = '<p class="field-error">Enter the email you registered with.</p>'; return; }
     resultEl.innerHTML = '<p class="muted-note">Checking…</p>';
-    const list = await loadRegistrations();
-    const entry = list.find(r => r.email === email);
-    if(!entry){
-      resultEl.innerHTML = '<p class="field-error">No request found for that email. Submit a request above.</p>';
-      return;
+    try{
+      const data = await apiCall('checkStatus', {email});
+      if(!data.found){
+        resultEl.innerHTML = '<p class="field-error">No request found for that email. Submit a request above.</p>';
+        return;
+      }
+      resultEl.innerHTML = '';
+      showResultPanel(data);
+    }catch(err){
+      resultEl.innerHTML = '<p class="field-error">Couldn\'t check your status right now. Please try again shortly.</p>';
     }
-    resultEl.innerHTML = '';
-    showResultPanel(entry);
   });
 
   // ---- admin flow ----
+  let adminPasscode = '';
+
   $('staffLink').addEventListener('click', ()=>{
     $('adminModal').classList.remove('hidden');
     $('adminPass').value='';
@@ -481,13 +474,26 @@ tr:last-child td{ border-bottom:none; }
   $('adminPass').addEventListener('keydown', (e)=>{ if(e.key === 'Enter') enterAdmin(); });
 
   async function enterAdmin(){
-    if($('adminPass').value === ADMIN_PASSCODE){
+    const passcode = $('adminPass').value;
+    const btn = $('adminEnterBtn');
+    btn.disabled = true; btn.textContent = 'Checking…';
+    try{
+      const data = await apiCall('listAll', {passcode});
+      if(data.error){
+        $('adminError').textContent = 'Incorrect passcode.';
+        $('adminError').classList.remove('hidden');
+        return;
+      }
+      adminPasscode = passcode;
       $('adminModal').classList.add('hidden');
       $('publicView').classList.add('hidden');
       $('adminView').classList.remove('hidden');
-      await renderAdminTable();
-    } else {
+      renderAdminRows(data.registrations);
+    }catch(err){
+      $('adminError').textContent = 'Could not reach the registration backend.';
       $('adminError').classList.remove('hidden');
+    }finally{
+      btn.disabled = false; btn.textContent = 'Enter';
     }
   }
   $('backToPublicBtn').addEventListener('click', ()=>{
@@ -498,8 +504,14 @@ tr:last-child td{ border-bottom:none; }
   async function renderAdminTable(){
     const wrap = $('adminTableWrap');
     wrap.innerHTML = '<p class="empty-state">Loading…</p>';
-    const list = await loadRegistrations();
-    if(list.length === 0){
+    const data = await apiCall('listAll', {passcode: adminPasscode});
+    if(data.error){ wrap.innerHTML = '<p class="empty-state">Session expired — go back and re-enter the passcode.</p>'; return; }
+    renderAdminRows(data.registrations);
+  }
+
+  function renderAdminRows(list){
+    const wrap = $('adminTableWrap');
+    if(!list || list.length === 0){
       wrap.innerHTML = '<p class="empty-state">No registrations yet.</p>';
       return;
     }
@@ -533,78 +545,29 @@ tr:last-child td{ border-bottom:none; }
   async function updateStatus(e, status){
     const tr = e.target.closest('tr');
     const email = tr.getAttribute('data-email');
-    const list = await loadRegistrations();
-    const entry = list.find(r => r.email === email);
-    if(entry){
-      entry.status = status;
-      await saveRegistrations(list);
-      if(status === 'approved'){
-        notifyApproval(entry);
-      }
+    tr.querySelectorAll('button').forEach(b => b.disabled = true);
+    try{
+      const res = await apiCall('updateStatus', {passcode: adminPasscode, email, status});
+      if(res.error){ alert(res.error); return; }
       await renderAdminTable();
+    }catch(err){
+      alert('Could not update this registration. Please try again.');
+      tr.querySelectorAll('button').forEach(b => b.disabled = false);
     }
   }
 
-  function notifyApproval(entry){
-    const subject = `Approved for Heart & Art of Shepherding: ${entry.name}`;
-    const body = `${entry.name} (${entry.email}) was just approved for course access.\n\nSubmitted: ${fmtDate(entry.submittedAt)}\nApproved: ${fmtDate(new Date().toISOString())}`;
-    attemptMailto(subject, body);
-    showEmailPreview(subject, body);
-  }
-
-  function attemptMailto(subject, body){
-    const a = document.createElement('a');
-    a.href = `mailto:rlccphil@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    a.target = '_blank';
-    a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-  }
-
-  function showEmailPreview(subject, body){
-    const existing = document.getElementById('emailPreviewBox');
-    if(existing) existing.remove();
-    const box = document.createElement('div');
-    box.id = 'emailPreviewBox';
-    box.className = 'panel';
-    box.style.marginTop = '18px';
-    box.style.borderColor = 'var(--gold)';
-    const fullText = `To: rlccphil@gmail.com\nSubject: ${subject}\n\n${body}`;
-    box.innerHTML = `
-      <h2 style="font-size:16px;">Email to send</h2>
-      <p class="lede" style="margin-bottom:12px;">If a compose window didn't open automatically, copy this and paste it into a new Gmail message to rlccphil@gmail.com.</p>
-      <textarea readonly style="width:100%; min-height:130px; font-family:'Source Serif 4', serif; font-size:13.5px; padding:10px; border:1px solid var(--line); border-radius:4px; background:#fff; color:var(--ink); margin-bottom:12px;">${fullText}</textarea>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn-primary" style="width:auto; flex:1;" id="copyEmailBtn">Copy email text</button>
-        <button class="btn-reset" style="width:auto;" id="dismissEmailBtn">Dismiss</button>
-      </div>
-      <p class="field-error hidden" id="copyConfirm" style="color:var(--forest-deep); margin-top:10px;">Copied.</p>
-    `;
-    $('adminTableWrap').insertAdjacentElement('afterend', box);
-    document.getElementById('copyEmailBtn').addEventListener('click', async ()=>{
-      try{
-        await navigator.clipboard.writeText(fullText);
-      }catch(e){
-        box.querySelector('textarea').select();
-        document.execCommand('copy');
-      }
-      const c = document.getElementById('copyConfirm');
-      c.classList.remove('hidden');
-      setTimeout(()=> c.classList.add('hidden'), 2000);
-    });
-    document.getElementById('dismissEmailBtn').addEventListener('click', ()=> box.remove());
-  }
-
   $('emailApprovedListBtn').addEventListener('click', async ()=>{
-    const list = await loadRegistrations();
-    const approved = list.filter(r => r.status === 'approved');
-    if(approved.length === 0){ alert('No approved registrants yet.'); return; }
-    approved.sort((a,b)=> new Date(b.submittedAt) - new Date(a.submittedAt));
-    const subject = `Approved list — Heart & Art of Shepherding (${approved.length})`;
-    const body = approved.map(r => `${r.name} — ${r.email} (submitted ${fmtDate(r.submittedAt)})`).join('\n');
-    attemptMailto(subject, body);
-    showEmailPreview(subject, body);
+    const btn = $('emailApprovedListBtn');
+    btn.disabled = true;
+    try{
+      const res = await apiCall('emailApprovedList', {passcode: adminPasscode});
+      if(res.error){ alert(res.error); return; }
+      alert(`Sent a summary of ${res.count} approved registrant(s) to rlccphil@gmail.com.`);
+    }catch(err){
+      alert('Could not send the summary email. Please try again.');
+    }finally{
+      btn.disabled = false;
+    }
   });
 })();
 </script>
