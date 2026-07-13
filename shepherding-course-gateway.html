@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Heart and Art of Shepherding — Course Access</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Source+Serif+4:ital,wght@0,400;0,500;1,400&display=swap');
+
+:root{
+  --forest-deep:#243a20;
+  --forest:#365233;
+  --forest-soft:#4d7349;
+  --gold:#b8933f;
+  --gold-light:#e4c777;
+  --cream:#f6f2e7;
+  --paper:#fbf9f3;
+  --ink:#26301f;
+  --ink-soft:#5a6650;
+  --line:#d9d0b8;
+  --danger:#9a4530;
+  --radius:4px;
+  --shadow: 0 18px 40px -20px rgba(36,58,32,0.35);
+}
+*{box-sizing:border-box;}
+body{margin:0;}
+.gate-wrap{
+  font-family:'Source Serif 4', Georgia, serif;
+  background:var(--cream);
+  color:var(--ink);
+  min-height:100%;
+  padding:0;
+}
+.gate-wrap h1,.gate-wrap h2,.gate-wrap h3{
+  font-family:'Fraunces', Georgia, serif;
+  font-weight:600;
+  margin:0;
+}
+/* ---------- Header / hero ---------- */
+.hero{
+  background: linear-gradient(180deg, var(--forest-deep) 0%, var(--forest) 68%, var(--forest-soft) 100%);
+  color:#f4efe0;
+  padding:52px 24px 64px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.hero::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse at 50% 120%, rgba(228,199,119,0.16), transparent 60%);
+  pointer-events:none;
+}
+.eyebrow{
+  font-family:'Fraunces', serif;
+  font-size:12.5px;
+  letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:var(--gold-light);
+  margin-bottom:14px;
+  position:relative;
+  z-index:1;
+}
+.hero h1{
+  font-size:clamp(28px,4.4vw,42px);
+  line-height:1.15;
+  max-width:620px;
+  margin:0 auto;
+  position:relative;
+  z-index:1;
+}
+.hero p.sub{
+  max-width:480px;
+  margin:16px auto 0;
+  color:#dfe7d9;
+  font-size:15.5px;
+  line-height:1.6;
+  position:relative;
+  z-index:1;
+}
+.gate-svg{
+  display:block;
+  margin:30px auto 0;
+  max-width:230px;
+  width:60%;
+  height:auto;
+  position:relative;
+  z-index:1;
+}
+/* ---------- Body ---------- */
+.body-area{
+  max-width:520px;
+  margin:0 auto;
+  padding:40px 24px 70px;
+}
+.panel{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:34px 30px;
+}
+.panel h2{
+  font-size:21px;
+  color:var(--forest-deep);
+  margin-bottom:8px;
+}
+.panel .lede{
+  color:var(--ink-soft);
+  font-size:14.5px;
+  line-height:1.6;
+  margin-bottom:24px;
+}
+label{
+  display:block;
+  font-family:'Fraunces', serif;
+  font-size:12.5px;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:var(--forest);
+  margin-bottom:6px;
+}
+input[type=text], input[type=email]{
+  width:100%;
+  font-family:'Source Serif 4', serif;
+  font-size:15.5px;
+  padding:11px 13px;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:#fff;
+  color:var(--ink);
+  margin-bottom:18px;
+}
+input:focus{
+  outline:2px solid var(--gold);
+  outline-offset:1px;
+  border-color:var(--gold);
+}
+.field-error{
+  margin-top:-12px;
+  margin-bottom:14px;
+  color:var(--danger);
+  font-size:13px;
+}
+button{
+  font-family:'Fraunces', serif;
+  font-size:15px;
+  font-weight:600;
+  letter-spacing:0.02em;
+  border:none;
+  border-radius:var(--radius);
+  padding:13px 22px;
+  cursor:pointer;
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+button:active{ transform:translateY(1px); }
+.btn-primary{
+  background:var(--forest);
+  color:#fbf9f3;
+  width:100%;
+}
+.btn-primary:hover{ background:var(--forest-deep); }
+.btn-gold{
+  background:var(--gold);
+  color:#2b2410;
+  width:100%;
+}
+.btn-gold:hover{ background:var(--gold-light); }
+.btn-link{
+  background:none;
+  color:var(--forest);
+  padding:6px 0;
+  text-decoration:underline;
+  text-underline-offset:3px;
+  font-size:13.5px;
+}
+.divider{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:26px 0;
+  color:var(--ink-soft);
+  font-size:12px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+}
+.divider::before,.divider::after{
+  content:"";
+  flex:1;
+  height:1px;
+  background:var(--line);
+}
+/* status states */
+.status-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  font-family:'Fraunces',serif;
+  font-size:12.5px;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  padding:6px 12px;
+  border-radius:20px;
+  margin-bottom:18px;
+}
+.status-pending{ background:#f1e6c7; color:#7a5b17; }
+.status-approved{ background:#dcead9; color:var(--forest-deep); }
+.status-declined{ background:#f2ddd6; color:var(--danger); }
+.dot{ width:7px; height:7px; border-radius:50%; background:currentColor; }
+.muted-note{ color:var(--ink-soft); font-size:13.5px; line-height:1.6; margin-top:16px; }
+.hidden{ display:none !important; }
+
+/* footer / admin trigger */
+.gate-footer{
+  text-align:center;
+  padding:0 24px 40px;
+  color:var(--ink-soft);
+  font-size:12px;
+}
+.gate-footer button.staff-link{
+  background:none;
+  border:none;
+  color:var(--ink-soft);
+  text-decoration:underline;
+  cursor:pointer;
+  font-family:'Source Serif 4', serif;
+  font-size:12px;
+  padding:0;
+}
+
+/* admin modal + panel */
+.modal-overlay{
+  position:fixed; inset:0;
+  background:rgba(36,48,31,0.55);
+  display:flex; align-items:center; justify-content:center;
+  padding:20px;
+  z-index:50;
+}
+.modal-box{
+  background:var(--paper);
+  border-radius:var(--radius);
+  padding:28px;
+  max-width:340px;
+  width:100%;
+  box-shadow:var(--shadow);
+}
+.modal-box h3{ font-size:17px; color:var(--forest-deep); margin-bottom:12px; }
+
+.admin-wrap{ max-width:760px; margin:0 auto; padding:36px 22px 70px; }
+.admin-head{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom:22px; flex-wrap:wrap; gap:10px; }
+.admin-head h2{ font-size:22px; color:var(--forest-deep); }
+table{ width:100%; border-collapse:collapse; background:var(--paper); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; }
+th,td{ text-align:left; padding:12px 14px; font-size:14px; border-bottom:1px solid var(--line); vertical-align:middle;}
+th{ font-family:'Fraunces',serif; font-size:11.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--forest); background:#f0ead6; }
+tr:last-child td{ border-bottom:none; }
+.row-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+.row-actions button{ padding:7px 12px; font-size:12.5px; }
+.btn-approve{ background:var(--forest); color:#fff; }
+.btn-decline{ background:transparent; color:var(--danger); border:1px solid var(--danger); }
+.btn-reset{ background:transparent; color:var(--ink-soft); border:1px solid var(--line); }
+.empty-state{ text-align:center; padding:40px 20px; color:var(--ink-soft); font-size:14px; }
+.small-note{ color:var(--ink-soft); font-size:12.5px; margin-top:18px; line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="gate-wrap" id="app">
+
+  <!-- ===== PUBLIC VIEW ===== -->
+  <div id="publicView">
+    <div class="hero">
+      <div class="eyebrow">Real Life Christian Communities</div>
+      <h1>The Heart and Art of Shepherding</h1>
+      <p class="sub">A course on pastoral care and shepherd leadership. Register below — course access opens once your request has been approved.</p>
+      <svg class="gate-svg" viewBox="0 0 220 170" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <line x1="30" y1="20" x2="30" y2="150" stroke="#e4c777" stroke-width="4" stroke-linecap="round"/>
+        <line x1="190" y1="20" x2="190" y2="150" stroke="#e4c777" stroke-width="4" stroke-linecap="round"/>
+        <path d="M22 40 Q110 -6 198 40" stroke="#e4c777" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <line x1="30" y1="95" x2="190" y2="95" stroke="#e4c777" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+        <line x1="55" y1="60" x2="165" y2="120" stroke="#e4c777" stroke-width="2.5" opacity="0.55"/>
+        <line x1="165" y1="60" x2="55" y2="120" stroke="#e4c777" stroke-width="2.5" opacity="0.55"/>
+        <circle cx="110" cy="16" r="6" fill="#f4efe0"/>
+        <path d="M60 150 q10 -22 30 -14 q8 -18 24 0 q16 -14 26 4 q10 -6 20 10" stroke="#dfe7d9" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.65"/>
+      </svg>
+    </div>
+
+    <div class="body-area">
+      <div class="panel" id="registerPanel">
+        <h2>Request access</h2>
+        <p class="lede">Fill in your name and email. A course leader will review your request before the course link is unlocked.</p>
+
+        <form id="registerForm">
+          <label for="regName">Full name</label>
+          <input type="text" id="regName" autocomplete="name" required>
+          <label for="regEmail">Email address</label>
+          <input type="email" id="regEmail" autocomplete="email" required>
+          <div class="field-error hidden" id="regError"></div>
+          <button type="submit" class="btn-primary">Submit request</button>
+        </form>
+
+        <div class="divider">Already requested access?</div>
+        <label for="checkEmail">Check your status</label>
+        <input type="email" id="checkEmail" placeholder="you@email.com">
+        <button type="button" class="btn-link" id="checkBtn" style="padding-top:2px;">Check status →</button>
+        <div id="checkResult"></div>
+      </div>
+
+      <div class="panel hidden" id="resultPanel"></div>
+    </div>
+
+    <div class="gate-footer">
+      The Heart and Art of Shepherding · RLCC
+      <br><button class="staff-link" id="staffLink">Course team access</button>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN PASSCODE MODAL ===== -->
+  <div class="modal-overlay hidden" id="adminModal">
+    <div class="modal-box">
+      <h3>Course team access</h3>
+      <label for="adminPass">Passcode</label>
+      <input type="text" id="adminPass" placeholder="Enter passcode">
+      <div class="field-error hidden" id="adminError">Incorrect passcode.</div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn-primary" id="adminEnterBtn" style="width:auto; flex:1;">Enter</button>
+        <button class="btn-reset" id="adminCancelBtn" style="width:auto; flex:1;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ADMIN VIEW ===== -->
+  <div class="admin-wrap hidden" id="adminView">
+    <div class="admin-head">
+      <h2>Registrations — Heart &amp; Art of Shepherding</h2>
+      <div style="display:flex; gap:14px; align-items:baseline; flex-wrap:wrap;">
+        <button class="btn-link" id="emailApprovedListBtn">Email me the approved list</button>
+        <button class="btn-link" id="backToPublicBtn">← Back to registration page</button>
+      </div>
+    </div>
+    <div id="adminTableWrap"></div>
+    <p class="small-note">Whenever you click Approve, a pre-filled email to rlccphil@gmail.com opens in a new tab — just hit Send from your mail app to log it. This page can't send email silently on its own (no server behind it), so that click-to-send step is the closest to automatic it can get. The passcode above is a simple gate for course-team convenience, not a secure login — avoid using it for sensitive data.</p>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const COURSE_URL = "https://share.minicoursegenerator.com/category/The-Heart-and-Art-of-Shepherding-(External)-1/d93b341b-9578-42c2-b5c9-33d87036d77d";
+  const STORAGE_KEY = "shepherding-registrations";
+  const ADMIN_PASSCODE = "shepherd2026"; // change this in the code to your own passcode
+
+  const $ = (id) => document.getElementById(id);
+
+  async function loadRegistrations(){
+    try{
+      const res = await window.storage.get(STORAGE_KEY, true);
+      return res ? JSON.parse(res.value) : [];
+    }catch(e){
+      return [];
+    }
+  }
+  async function saveRegistrations(list){
+    try{
+      await window.storage.set(STORAGE_KEY, JSON.stringify(list), true);
+      return true;
+    }catch(e){
+      console.error("storage error", e);
+      return false;
+    }
+  }
+
+  function normEmail(e){ return e.trim().toLowerCase(); }
+
+  function fmtDate(iso){
+    const d = new Date(iso);
+    return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});
+  }
+
+  function statusBadge(status){
+    if(status === 'approved') return '<span class="status-badge status-approved"><span class="dot"></span>Approved</span>';
+    if(status === 'declined') return '<span class="status-badge status-declined"><span class="dot"></span>Not approved</span>';
+    return '<span class="status-badge status-pending"><span class="dot"></span>Pending review</span>';
+  }
+
+  function showResultPanel(entry){
+    const panel = $('resultPanel');
+    $('registerPanel').classList.add('hidden');
+    panel.classList.remove('hidden');
+
+    if(entry.status === 'approved'){
+      panel.innerHTML = `
+        ${statusBadge('approved')}
+        <h2>You're in, ${escapeHtml(entry.name.split(' ')[0])}.</h2>
+        <p class="lede">Your request was approved. Click below to open the course.</p>
+        <button class="btn-gold" id="goToCourseBtn">Access the course →</button>
+        <p class="muted-note"><button class="btn-link" id="registerAnotherBtn">Register a different email</button></p>
+      `;
+      $('goToCourseBtn').addEventListener('click', ()=> window.open(COURSE_URL, '_blank'));
+    } else if(entry.status === 'declined'){
+      panel.innerHTML = `
+        ${statusBadge('declined')}
+        <h2>Request not approved</h2>
+        <p class="lede">Your access request wasn't approved. If you think this is a mistake, please reach out to the course team directly.</p>
+        <p class="muted-note"><button class="btn-link" id="registerAnotherBtn">Register a different email</button></p>
+      `;
+    } else {
+      panel.innerHTML = `
+        ${statusBadge('pending')}
+        <h2>Request received</h2>
+        <p class="lede">Thanks, ${escapeHtml(entry.name.split(' ')[0])}. Your request was submitted on ${fmtDate(entry.submittedAt)} and is waiting for review. Check back here once you've been approved.</p>
+        <p class="muted-note"><button class="btn-link" id="registerAnotherBtn">Register a different email</button></p>
+      `;
+    }
+    $('registerAnotherBtn').addEventListener('click', ()=>{
+      panel.classList.add('hidden');
+      panel.innerHTML = '';
+      $('registerPanel').classList.remove('hidden');
+      $('regName').value=''; $('regEmail').value=''; $('checkEmail').value='';
+      $('checkResult').innerHTML='';
+    });
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+  }
+
+  // ---- register form ----
+  $('registerForm').addEventListener('submit', async (e)=>{
+    e.preventDefault();
+    const errEl = $('regError');
+    errEl.classList.add('hidden');
+    const name = $('regName').value.trim();
+    const email = normEmail($('regEmail').value);
+    if(!name || !email){ errEl.textContent = 'Please fill in both fields.'; errEl.classList.remove('hidden'); return; }
+
+    const btn = e.target.querySelector('button');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+
+    const list = await loadRegistrations();
+    const existing = list.find(r => r.email === email);
+    if(existing){
+      btn.disabled = false; btn.textContent = 'Submit request';
+      showResultPanel(existing);
+      return;
+    }
+    const entry = { name, email, status: 'pending', submittedAt: new Date().toISOString() };
+    list.push(entry);
+    await saveRegistrations(list);
+    btn.disabled = false; btn.textContent = 'Submit request';
+    showResultPanel(entry);
+  });
+
+  // ---- check status ----
+  $('checkBtn').addEventListener('click', async ()=>{
+    const email = normEmail($('checkEmail').value);
+    const resultEl = $('checkResult');
+    if(!email){ resultEl.innerHTML = '<p class="field-error">Enter the email you registered with.</p>'; return; }
+    resultEl.innerHTML = '<p class="muted-note">Checking…</p>';
+    const list = await loadRegistrations();
+    const entry = list.find(r => r.email === email);
+    if(!entry){
+      resultEl.innerHTML = '<p class="field-error">No request found for that email. Submit a request above.</p>';
+      return;
+    }
+    resultEl.innerHTML = '';
+    showResultPanel(entry);
+  });
+
+  // ---- admin flow ----
+  $('staffLink').addEventListener('click', ()=>{
+    $('adminModal').classList.remove('hidden');
+    $('adminPass').value='';
+    $('adminError').classList.add('hidden');
+    $('adminPass').focus();
+  });
+  $('adminCancelBtn').addEventListener('click', ()=> $('adminModal').classList.add('hidden'));
+  $('adminEnterBtn').addEventListener('click', enterAdmin);
+  $('adminPass').addEventListener('keydown', (e)=>{ if(e.key === 'Enter') enterAdmin(); });
+
+  async function enterAdmin(){
+    if($('adminPass').value === ADMIN_PASSCODE){
+      $('adminModal').classList.add('hidden');
+      $('publicView').classList.add('hidden');
+      $('adminView').classList.remove('hidden');
+      await renderAdminTable();
+    } else {
+      $('adminError').classList.remove('hidden');
+    }
+  }
+  $('backToPublicBtn').addEventListener('click', ()=>{
+    $('adminView').classList.add('hidden');
+    $('publicView').classList.remove('hidden');
+  });
+
+  async function renderAdminTable(){
+    const wrap = $('adminTableWrap');
+    wrap.innerHTML = '<p class="empty-state">Loading…</p>';
+    const list = await loadRegistrations();
+    if(list.length === 0){
+      wrap.innerHTML = '<p class="empty-state">No registrations yet.</p>';
+      return;
+    }
+    list.sort((a,b)=> new Date(b.submittedAt) - new Date(a.submittedAt));
+    const rows = list.map(entry => `
+      <tr data-email="${escapeHtml(entry.email)}">
+        <td>${escapeHtml(entry.name)}</td>
+        <td>${escapeHtml(entry.email)}</td>
+        <td>${fmtDate(entry.submittedAt)}</td>
+        <td>${statusBadge(entry.status)}</td>
+        <td>
+          <div class="row-actions">
+            ${entry.status !== 'approved' ? `<button class="btn-approve act-approve">Approve</button>` : ''}
+            ${entry.status !== 'declined' ? `<button class="btn-decline act-decline">Decline</button>` : ''}
+            ${entry.status !== 'pending' ? `<button class="btn-reset act-reset">Reset</button>` : ''}
+          </div>
+        </td>
+      </tr>
+    `).join('');
+    wrap.innerHTML = `
+      <table>
+        <thead><tr><th>Name</th><th>Email</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    `;
+    wrap.querySelectorAll('.act-approve').forEach(b => b.addEventListener('click', (e)=> updateStatus(e, 'approved')));
+    wrap.querySelectorAll('.act-decline').forEach(b => b.addEventListener('click', (e)=> updateStatus(e, 'declined')));
+    wrap.querySelectorAll('.act-reset').forEach(b => b.addEventListener('click', (e)=> updateStatus(e, 'pending')));
+  }
+
+  async function updateStatus(e, status){
+    const tr = e.target.closest('tr');
+    const email = tr.getAttribute('data-email');
+    const list = await loadRegistrations();
+    const entry = list.find(r => r.email === email);
+    if(entry){
+      entry.status = status;
+      await saveRegistrations(list);
+      if(status === 'approved'){
+        notifyApproval(entry);
+      }
+      await renderAdminTable();
+    }
+  }
+
+  function notifyApproval(entry){
+    const subject = `Approved for Heart & Art of Shepherding: ${entry.name}`;
+    const body = `${entry.name} (${entry.email}) was just approved for course access.\n\nSubmitted: ${fmtDate(entry.submittedAt)}\nApproved: ${fmtDate(new Date().toISOString())}`;
+    const mailto = `mailto:rlccphil@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailto, '_blank');
+  }
+
+  $('emailApprovedListBtn').addEventListener('click', async ()=>{
+    const list = await loadRegistrations();
+    const approved = list.filter(r => r.status === 'approved');
+    if(approved.length === 0){ alert('No approved registrants yet.'); return; }
+    approved.sort((a,b)=> new Date(b.submittedAt) - new Date(a.submittedAt));
+    const subject = `Approved list — Heart & Art of Shepherding (${approved.length})`;
+    const body = approved.map(r => `${r.name} — ${r.email} (submitted ${fmtDate(r.submittedAt)})`).join('\n');
+    const mailto = `mailto:rlccphil@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.open(mailto, '_blank');
+  });
+})();
+</script>
+</body>
+</html>
