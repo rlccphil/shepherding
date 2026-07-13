@@ -548,8 +548,52 @@ tr:last-child td{ border-bottom:none; }
   function notifyApproval(entry){
     const subject = `Approved for Heart & Art of Shepherding: ${entry.name}`;
     const body = `${entry.name} (${entry.email}) was just approved for course access.\n\nSubmitted: ${fmtDate(entry.submittedAt)}\nApproved: ${fmtDate(new Date().toISOString())}`;
-    const mailto = `mailto:rlccphil@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.open(mailto, '_blank');
+    attemptMailto(subject, body);
+    showEmailPreview(subject, body);
+  }
+
+  function attemptMailto(subject, body){
+    const a = document.createElement('a');
+    a.href = `mailto:rlccphil@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  function showEmailPreview(subject, body){
+    const existing = document.getElementById('emailPreviewBox');
+    if(existing) existing.remove();
+    const box = document.createElement('div');
+    box.id = 'emailPreviewBox';
+    box.className = 'panel';
+    box.style.marginTop = '18px';
+    box.style.borderColor = 'var(--gold)';
+    const fullText = `To: rlccphil@gmail.com\nSubject: ${subject}\n\n${body}`;
+    box.innerHTML = `
+      <h2 style="font-size:16px;">Email to send</h2>
+      <p class="lede" style="margin-bottom:12px;">If a compose window didn't open automatically, copy this and paste it into a new Gmail message to rlccphil@gmail.com.</p>
+      <textarea readonly style="width:100%; min-height:130px; font-family:'Source Serif 4', serif; font-size:13.5px; padding:10px; border:1px solid var(--line); border-radius:4px; background:#fff; color:var(--ink); margin-bottom:12px;">${fullText}</textarea>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn-primary" style="width:auto; flex:1;" id="copyEmailBtn">Copy email text</button>
+        <button class="btn-reset" style="width:auto;" id="dismissEmailBtn">Dismiss</button>
+      </div>
+      <p class="field-error hidden" id="copyConfirm" style="color:var(--forest-deep); margin-top:10px;">Copied.</p>
+    `;
+    $('adminTableWrap').insertAdjacentElement('afterend', box);
+    document.getElementById('copyEmailBtn').addEventListener('click', async ()=>{
+      try{
+        await navigator.clipboard.writeText(fullText);
+      }catch(e){
+        box.querySelector('textarea').select();
+        document.execCommand('copy');
+      }
+      const c = document.getElementById('copyConfirm');
+      c.classList.remove('hidden');
+      setTimeout(()=> c.classList.add('hidden'), 2000);
+    });
+    document.getElementById('dismissEmailBtn').addEventListener('click', ()=> box.remove());
   }
 
   $('emailApprovedListBtn').addEventListener('click', async ()=>{
@@ -559,8 +603,8 @@ tr:last-child td{ border-bottom:none; }
     approved.sort((a,b)=> new Date(b.submittedAt) - new Date(a.submittedAt));
     const subject = `Approved list — Heart & Art of Shepherding (${approved.length})`;
     const body = approved.map(r => `${r.name} — ${r.email} (submitted ${fmtDate(r.submittedAt)})`).join('\n');
-    const mailto = `mailto:rlccphil@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    window.open(mailto, '_blank');
+    attemptMailto(subject, body);
+    showEmailPreview(subject, body);
   });
 })();
 </script>
